@@ -27,9 +27,12 @@
 <body>
     <main>
         <h1>Exemplos Javascript</h1>
-        <button id="botao">Executar</button>
+        <button id="botao"><i class="fa-solid fa-circle-play"></i> Executar</button>
         <div id="resultado">
-
+            <p>Linha 1</p>
+            <p>Linha 2</p>
+            ...
+            <p>Linha 10000</p>
         </div>
     </main>
     <!-- Javascript DO BOOTSTRAP -->
@@ -38,6 +41,41 @@
         crossorigin="anonymous"></script>
     <script>
         // Escrever código JS dentro desta tag <script>
+        function incluir10kLinhas() {
+            let linhas = '';
+            for (let i = 1; i <= 10000; i++) {
+                linhas += '<p>Linha ' + i + '</p>'; // linhas = linhas + '...'
+            }
+            document.getElementById('resultado').innerHTML = linhas;
+        }
+
+        function incluir10kLinhasV2() {
+            for (let i = 1; i <= 10000; i++) {
+                document.getElementById('resultado')
+                    .insertAdjacentHTML('beforeend', `<p>Linha ${i} - v2</p>`);
+            }
+        }
+
+        function destacarLinhasPares() {
+            let arrayElementosP = document.querySelectorAll('#resultado > p');
+            for (let i = 0; i < arrayElementosP.length; i++) {
+                if ((i+1) % 2 === 0) {
+                    let tagP = arrayElementosP[i];
+                    tagP.style.color = 'red';
+                    tagP.style.backgroundColor = 'blue';
+                }
+            }
+        }
+
+        function alterarClassTitulo() {
+            document.querySelector('h1').classList.add('titulo');
+        }
+
+        document.getElementById('botao').addEventListener('click', function() {
+            incluir10kLinhasV2();
+            destacarLinhasPares();
+            alterarClassTitulo();
+        });
 
     </script>
 </body>
