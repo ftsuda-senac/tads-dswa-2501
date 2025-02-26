@@ -71,10 +71,29 @@
             document.querySelector('h1').classList.add('titulo');
         }
 
-        document.getElementById('botao').addEventListener('click', function() {
-            incluir10kLinhasV2();
-            destacarLinhasPares();
-            alterarClassTitulo();
+        document.getElementById('botao').addEventListener('click', async function() {
+            let promise = new Promise(function(resolve, reject) {
+                setTimeout(function() {
+                    reject();
+                }, 3000);
+            });
+            // promise.then(function() {
+            //     incluir10kLinhasV2();
+            //     destacarLinhasPares();
+            //     alterarClassTitulo();
+            // }).catch(function() {
+            //     alert('Promise com reject');
+            // });
+            try {
+                await promise;
+                incluir10kLinhasV2();
+                destacarLinhasPares();
+                alterarClassTitulo();
+            } catch(err) {
+                alert('Promise com reject');
+            }
+
+
         });
 
     </script>
