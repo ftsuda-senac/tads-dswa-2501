@@ -1,20 +1,45 @@
 package br.senac.tads.dsw.exemplo.rest;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 
 public class DadosDto {
+
   private Integer id;
+
+  // @NotNull
+  // @NotEmpty
+  @NotBlank
+  private String apelido;
+  
+  @NotBlank
   private String nome;
+
+  @PastOrPresent
   private LocalDate dataNascimento;
+
+  @NotBlank
+  @Email
   private String email;
+
   private String telefone;
+  private List<String> interesses;
+  private String senha;
+  private String senhaConfirmacao;
 
   public DadosDto() {
   }
 
-  public DadosDto(Integer id, String nome, String dataNascimento,
+  public DadosDto(Integer id, String apelido, String nome, String dataNascimento,
       String email, String telefone) {
     this.id = id;
+    this.apelido = apelido;
     this.nome = nome;
     this.dataNascimento = LocalDate.parse(dataNascimento);
     this.email = email;
@@ -27,6 +52,14 @@ public class DadosDto {
 
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public String getApelido() {
+    return apelido;
+  }
+
+  public void setApelido(String apelido) {
+    this.apelido = apelido;
   }
 
   public String getNome() {
@@ -60,5 +93,30 @@ public class DadosDto {
   public void setTelefone(String telefone) {
     this.telefone = telefone;
   }
+
+  public List<String> getInteresses() {
+    return interesses;
+  }
+
+  public void setInteresses(List<String> interesses) {
+    this.interesses = interesses;
+  }
+
+  public String getSenha() {
+    return senha;
+  }
+
+  public void setSenha(String senha) {
+    this.senha = senha;
+  }
+
+  public String getSenhaConfirmacao() {
+    return senhaConfirmacao;
+  }
+
+  public void setSenhaConfirmacao(String senhaConfirmacao) {
+    this.senhaConfirmacao = senhaConfirmacao;
+  }
+
 
 }
