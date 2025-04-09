@@ -33,6 +33,13 @@ public class DadosService {
   }
 
   public List<DadosDto> findAll() {
+    // List<DadosDto> dadosArr = new ArrayList<>(dados.values());
+    // for (DadosDto dados : dadosArr) {
+    // }
+
+    // for (int i = 0; i < dadosArr.size(); i++) {
+    //   DadosDto dados = dadosArr.get(i);
+    // }
     return new ArrayList<>(dados.values());
   }
 

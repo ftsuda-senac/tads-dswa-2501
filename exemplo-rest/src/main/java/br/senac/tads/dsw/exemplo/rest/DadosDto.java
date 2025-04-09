@@ -3,21 +3,23 @@ package br.senac.tads.dsw.exemplo.rest;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import br.senac.tads.dsw.exemplo.rest.validation.SenhasIguais;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
+@SenhasIguais
 public class DadosDto {
 
   private Integer id;
 
   // @NotNull
   // @NotEmpty
-  @NotBlank
+  @NotBlank(message = "Preencha o apelido seu animal")
   private String apelido;
-  
+
   @NotBlank
   private String nome;
 
@@ -29,8 +31,17 @@ public class DadosDto {
   private String email;
 
   private String telefone;
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private List<String> interesses;
+
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private List<Integer> interessesIds;
+
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String senha;
+
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   private String senhaConfirmacao;
 
   public DadosDto() {
@@ -103,6 +114,14 @@ public class DadosDto {
     this.interesses = interesses;
   }
 
+  public List<Integer> getInteressesIds() {
+    return interessesIds;
+  }
+
+  public void setInteressesIds(List<Integer> interessesIds) {
+    this.interessesIds = interessesIds;
+  }
+
   public String getSenha() {
     return senha;
   }
@@ -118,6 +137,5 @@ public class DadosDto {
   public void setSenhaConfirmacao(String senhaConfirmacao) {
     this.senhaConfirmacao = senhaConfirmacao;
   }
-
 
 }

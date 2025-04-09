@@ -41,12 +41,13 @@
         <h1>Pessoas</h1>
         <h2 id="tituloInclusao" class="d-none">Incluir nova pessoa</h2>
         <h2 id="tituloAlteracao" class="d-none">Alterar pessoa</h2>
-        <form method="post" id="formDados">
+        <form method="post" id="formDados" novalidate>
           <div class="row mb-3">
             <label for="txtApelido" class="col-sm-2 col-form-label">Apelido</label>
             <div class="col-sm-10">
               <input type="text" name="apelido" value="" id="txtApelido"
-                placeholder="Preencha um apelido (username) válido e único" class="form-control"
+                placeholder="Preencha um apelido (username) válido e único"
+                class="form-control"
                 maxlength="100" required />
               <p class="invalid-feedback"></p>
             </div>
@@ -54,7 +55,8 @@
           <div class="row mb-3">
             <label for="txtNome" class="col-sm-2 col-form-label">Nome</label>
             <div class="col-sm-10">
-              <input type="text" name="nome" value="" id="txtNome" placeholder="Preencha o nome completo"
+              <input type="text" name="nome" value="" id="txtNome"
+                placeholder="Preencha o nome completo"
                 class="form-control" maxlength="100" required />
               <p class="invalid-feedback"></p>
             </div>
@@ -62,7 +64,8 @@
           <div class="row mb-3">
             <label for="txtEmail" class="col-sm-2 col-form-label">E-mail</label>
             <div class="col-sm-10">
-              <input type="email" name="email" value="" id="txtEmail" placeholder="E-mail válido" class="form-control"
+              <input type="email" name="email" value="" id="txtEmail"
+                placeholder="E-mail válido" class="form-control"
                 maxlength="100" required />
               <p class="invalid-feedback"></p>
             </div>
@@ -70,7 +73,8 @@
           <div class="row mb-3">
             <label for="txtTelefone" class="col-sm-2 col-form-label">Telefone</label>
             <div class="col-sm-10">
-              <input type="text" name="telefone" value="" id="txtTelefone" placeholder="Telefone" class="form-control"
+              <input type="text" name="telefone" value="" id="txtTelefone"
+                placeholder="Telefone" class="form-control"
                 maxlength="20" required />
               <p class="invalid-feedback"></p>
             </div>
@@ -150,6 +154,100 @@
     crossorigin="anonymous"></script>
   <script>
     // Carregar opções de interesses
+    async function findAllInteresses() {
+      try {
+        const httpResp = await fetch('http://localhost:8080/api/interesses');
+        if (!httpResp.ok) {
+          alert('Erro na requisição HTTP - ' + httpResp.status);
+          return;
+        }
+        const dadosArray = await httpResp.json();
+
+        // Limpar a tag <div id="opcoesInteresses">
+        const elOpcoesInteresses = document.getElementById('opcoesInteresses');
+        elOpcoesInteresses.innerHTML = '';
+
+        for (const interesse of dadosArray) {
+          const idInput = `interesse${interesse.id}`;
+          const opcaoInteresse = `<div class="form-check form-check-inline">
+              <input type="checkbox" name="interessesIds" value="${interesse.id}" id="${idInput}" class="form-check-input" />
+              <label for="${idInput}" class="form-check-label">${interesse.nome}</label>
+            </div>`;
+          elOpcoesInteresses.insertAdjacentHTML('beforeend', opcaoInteresse);
+        }
+      } catch (err) {
+        alert('Erro na requisição - ' + err);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => { findAllInteresses() });
+
+    async function salvar(evt) {
+      evt.preventDefault();
+
+      const elFormulario = document.getElementById('formDados');
+
+      // Verificar quais interesses foram selecionados
+      const interessesIds = [];
+      const interessesChk = document.querySelectorAll('[name="interessesIds"]');
+      for (const elChk of interessesChk) {
+        if (elChk.checked) {
+          interessesIds.push(+elChk.value); // + converte a string para number
+        }
+      }
+
+      const dadosParaEnviar = {
+        apelido: elFormulario.apelido.value,
+        nome: elFormulario.nome.value,
+        email: elFormulario.email.value,
+        telefone: elFormulario.telefone.value,
+        dataNascimento: elFormulario.dataNascimento.value,
+        senha: elFormulario.senha.value,
+        senhaConfirmacao: elFormulario.senhaConfirmacao.value,
+        interessesIds: interessesIds
+      }
+      console.log(JSON.stringify(dadosParaEnviar));
+
+      // Limpa mensagens de validação da requisição anterior
+      const elInputs = document.querySelectorAll('.is-invalid');
+      for (const elInput of elInputs) {
+        elInput.classList.remove('is-invalid');
+      }
+      const elMensagens= document.querySelectorAll('.is-invalid + p');
+      for (const elMensagem of elMensagens) {
+        elMensagem.textContent = '';
+      }
+
+      const httpResp = await fetch('http://localhost:8080/api/dados', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(dadosParaEnviar)
+      });
+      if (!httpResp.ok) {
+        if (httpResp.status === 400) {
+          const erros = await httpResp.json();
+          for (const erro of erros.errors) {
+            const field = erro.field;
+            const mensagem = erro.defaultMessage;
+
+            const elInput = document.querySelector(`[name="${field}"]`);
+            const elMensagem = document.querySelector(`[name="${field}"] + p`);
+
+            elInput.classList.add('is-invalid');
+            elMensagem.textContent = mensagem;
+          }
+        } else {
+          alert('Erro na requisição HTTP - ' + httpResp.status);
+        }
+        return;
+      }
+      alert('Sucesso');
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('formDados').onsubmit = salvar;
 
   </script>
 </body>

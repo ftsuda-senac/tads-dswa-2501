@@ -91,6 +91,47 @@
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script>
+    function confirmarExclusao(id) {
+      const confirmado = confirm('Confirma exclusão do ID ' + id + '?');
+      if (confirmado) {
+        // Implementa lógica para fetch ao endpoint do DELETE
+        // Recarregadas dados da tela
+        alert('Excluído');
+      }
+    }
+
+    async function findAll() {
+      try {
+        const httpResp = await fetch('http://localhost:8080/api/dados');
+        if (!httpResp.ok) {
+          alert('Erro na requisição HTTP - ' + httpResp.status);
+          return;
+        }
+        const dadosArray = await httpResp.json();
+
+        // Limpar a tag <tbody id="dados">
+        const elTbody = document.getElementById('dados');
+        elTbody.innerHTML = '';
+
+        for (const dadoPessoa of dadosArray) {
+          const linhaTabela = `<tr>
+            <th>${dadoPessoa.id}</th>
+            <td>${dadoPessoa.nome}</td>
+            <td>${dadoPessoa.apelido}</td>
+            <td>
+              <a href="detalhes.html?id=${dadoPessoa.id}">Detalhes</a>
+              <a href="formulario.html?id=${dadoPessoa.id}">Alterar</a>
+              <button onclick="confirmarExclusao(${dadoPessoa.id})">Excluir</button>
+            </td>
+          </tr>`;
+          elTbody.insertAdjacentHTML('beforeend', linhaTabela);
+        }
+      } catch (err) {
+        alert('Erro na requisição - ' + err);
+      }
+    }
+
+    document.getElementById('btnFetch').onclick = findAll;
 
   </script>
 </body>

@@ -89,6 +89,34 @@
       return id;
     }
 
+    async function findById() {
+      const id = obterParametroQueryString();
+      if (!id) {
+        alert('Acesso inválido - ID não informado');
+        window.location.href = 'index.html';
+        return;
+      }
+      try {
+        const httpResp = await fetch(`http://localhost:8080/api/dados/${id}`);
+        if (!httpResp.ok) {
+          alert('Erro na requisição HTTP - ' + httpResp.status);
+          return;
+        }
+        const dados = await httpResp.json();
+        document.getElementById('nome').textContent = dados.nome;
+        document.getElementById('email').textContent = dados.email;
+        document.getElementById('telefone').textContent = dados.telefone;
+        document.getElementById('dataNascimento').textContent = dados.dataNascimento;
+
+        const interessesLi = dados.interesses.map((interesse) => `<li>${interesse}</li>`);
+        document.getElementById('interesses').innerHTML = `<ul>${interessesLi.join(' ')}</ul>`
+      } catch (err) {
+        alert('Erro na requisição - ' + err);
+      }
+
+    }
+    document.addEventListener('DOMContentLoaded', findById);
+
   </script>
 
 </body>
