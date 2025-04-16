@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exemplo upload</title>
+</head>
+
+<body>
+  <h1>Exemplo upload com Fetch API e FormData</h1>
+  <div>
+    <form id="formUpload">
+      <div>
+        <label>Arquivo</label>
+        <input type="file" name="arquivo" />
+      </div>
+      <button>Enviar</button>
+    </form>
+  </div>
+  <script>
+    async function uploadArquivo(evt) {
+      evt.preventDefault();
+      const formData = new FormData(document.getElementById('formUpload'));
+      try {
+        const httpResp = await fetch('/api/pessoas/imagens/upload', {
+          method: 'POST',
+          body: formData // Implicito que o content-type = 'multipart/form-data'
+        });
+        if (httpResp.ok) {
+          alert('Sucesso');
+        } else {
+          alert('Erro');
+        }
+      } catch (err) {
+        alert('Erro genérico - ' - err);
+      }
+    }
+    document.getElementById('formUpload').onsubmit = uploadArquivo;
+  </script>
+
+</body>
+
+</html>
