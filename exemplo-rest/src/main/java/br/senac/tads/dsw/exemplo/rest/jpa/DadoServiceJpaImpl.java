@@ -1,12 +1,15 @@
 package br.senac.tads.dsw.exemplo.rest.jpa;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.senac.tads.dsw.exemplo.rest.DadosDto;
 import br.senac.tads.dsw.exemplo.rest.DadosService;
@@ -15,8 +18,14 @@ import br.senac.tads.dsw.exemplo.rest.DadosService;
 @Primary
 public class DadoServiceJpaImpl implements DadosService {
 
+    // @Autowired
+    // private DadosJpaRepository repository;
+
     @Autowired
-    private DadosJpaRepository repository;
+    private DadosPessoaisRepository repository;
+
+    @Autowired
+    private InteresseRepository interesseRepository;
 
     private DadosDto entityToDto(DadosPessoais entity) {
         DadosDto dto = new DadosDto();
@@ -47,7 +56,7 @@ public class DadoServiceJpaImpl implements DadosService {
 
     @Override
     public Optional<DadosDto> findById(Integer id) {
-        Optional<DadosPessoais> optDados = repository.findById(id);
+        Optional<DadosPessoais> optDados = repository.buscaSqlNativo(id);
         if (optDados.isEmpty()) {
             return Optional.empty();
         }
@@ -56,6 +65,7 @@ public class DadoServiceJpaImpl implements DadosService {
     }
 
     @Override
+    @Transactional
     public DadosDto save(DadosDto dto) {
         DadosPessoais entity = new DadosPessoais();
         entity.setId(dto.getId());
@@ -65,13 +75,21 @@ public class DadoServiceJpaImpl implements DadosService {
         entity.setEmail(dto.getEmail());
         entity.setTelefone(dto.getTelefone());
         entity.setSenha(dto.getSenha());
-
+        Set<Interesse> interesses = new HashSet<>();
+        for (Integer interesseId : dto.getInteressesIds()) {
+            Optional<Interesse> optInteresse = interesseRepository.findById(interesseId);
+            if (optInteresse.isPresent()) {
+                interesses.add(optInteresse.get());
+            }
+        }
+        entity.setInteresses(interesses);
         repository.save(entity);
         dto.setId(entity.getId());
         return dto;
     }
 
     @Override
+    @Transactional
     public void delete(Integer id) {
         repository.deleteById(id);
     }
