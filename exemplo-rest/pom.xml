@@ -56,12 +56,14 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- SPRING SECURITY STARTER PADRÃO-->
         <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         -->
+        <!-- PARA USO DO JWT - JÁ INCLUI SECURITY STARTER PADRÃO -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
