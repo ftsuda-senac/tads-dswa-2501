@@ -4,25 +4,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class UsuarioSistemaService implements UserDetailsService {
 
     private Map<String, UsuarioSistema> usuarios = new HashMap<>();
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public UsuarioSistemaService() {
-        usuarios.put("peao", new UsuarioSistema("peao", "Peão da Silva", 
-            "{noop}Abcd1234", List.of(new Permissao("SCOPE_PEAO"))));
-        usuarios.put("gerente", new UsuarioSistema("gerente", "Gerente de Souza", 
-            "{noop}Abcd1234", List.of(new Permissao("SCOPE_PEAO"),
-                new Permissao("SCOPE_GERENTE"))));
+
+    }
+
+    @PostConstruct
+    public void init() {
+        usuarios.put("peao", new UsuarioSistema("peao", "Peão da Silva",
+                passwordEncoder.encode("Abcd1234"), List.of(new Permissao("SCOPE_PEAO"))));
+        usuarios.put("gerente", new UsuarioSistema("gerente", "Gerente de Souza",
+                passwordEncoder.encode("Abcd1234"), List.of(new Permissao("SCOPE_PEAO"),
+                        new Permissao("SCOPE_GERENTE"))));
         usuarios.put("diretor", new UsuarioSistema("diretor", "Diretor dos Santos",
-            "{noop}Abcd1234", List.of(new Permissao("SCOPE_PEAO"),
-                new Permissao("SCOPE_DIRETOR"))));
+                passwordEncoder.encode("Abcd1234"), List.of(new Permissao("SCOPE_PEAO"),
+                        new Permissao("SCOPE_DIRETOR"))));
     }
 
     @Override
